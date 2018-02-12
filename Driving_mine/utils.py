@@ -192,3 +192,60 @@ def diverged(predictions1, predictions2, predictions3, target):
     if not predictions1 == predictions2 == predictions3:
         return True
     return False
+
+
+def generate_value(row, col):
+    matrix = []
+    for i in range(row):
+        line = []
+        for j in range(col):
+            pixel = []
+            for k in range(3):
+                pixel.append((random.random() - 0.5) * 4)
+            line.append(pixel)
+        matrix.append(line)
+    # matrix = random.random(size = (row, col))
+    # for i in range(row):
+    #     for j in range(col):
+    #         matrix[i][j] = (matrix[i][j] - 0.5) * 4
+    return [matrix]
+
+# Because all the pic from one original pic(only pixel changed), it issuitable to use euclidean metric
+def distance_x(img1, img2):
+    sum = 0
+    for i in range(len(img1)):
+        for j in range(len(img1[i])):
+            for k in range(len(img1[i][j])):
+                for l in range(len(img1[i][j][k])):
+                    sum += (img1[i][j][k][l] - img2[i][j][k][l]) ** 2
+    return sum ** 0.5
+
+def distance_y(result1, result2):
+    sum = 0
+    for i in range(len(result1)):
+        sum += (result1[i] - result2[i]) ** 2
+    return sum ** 0.5
+
+def c_occl(gradients, start_point, rect_shape):
+    new_grads = np.zeros_like(gradients)
+    gradients = np.asarray(gradients)
+    new_grads[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]] = gradients[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]]
+    return new_grads
+
+def c_light(gradients):
+    new_grads = np.ones_like(gradients)
+    gradients = np.asarray(gradients)
+    grad_mean = 500 * np.mean(gradients)
+    return grad_mean * new_grads
+
+def c_black(gradients, start_point, rect_shape):
+    # start_point = (
+    #     random.randint(0, gradients.shape[1] - rect_shape[0]), random.randint(0, gradients.shape[2] - rect_shape[1]))
+    new_grads = np.zeros_like(gradients)
+    gradients = np.asarray(gradients)
+    patch = gradients[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]]
+    if np.mean(patch) < 0:
+        new_grads[:, start_point[0]:start_point[0] + rect_shape[0],
+        start_point[1]:start_point[1] + rect_shape[1]] = -np.ones_like(patch)
+    return new_grads
+
