@@ -25,7 +25,6 @@ def constraint_occl(gradients, start_point, rect_shape):
                                                      start_point[1]:start_point[1] + rect_shape[1]]
     return new_grads
 
-
 def constraint_light(gradients):
     new_grads = np.ones_like(gradients)
     grad_mean = np.mean(gradients)
@@ -122,3 +121,38 @@ def diverged(predictions1, predictions2, predictions3, target):
     if not predictions1 == predictions2 == predictions3:
         return True
     return False
+
+def c_occl(gradients, start_point, rect_shape):
+    gradients = np.asarray(gradients)
+    new_grads = np.zeros_like(gradients)
+    new_grads[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]] = gradients[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]]
+    return new_grads
+
+def c_light(gradients):
+    new_grads = np.ones_like(gradients)
+    grad_mean = np.mean(gradients)
+    return grad_mean * new_grads
+
+def c_black(gradients, start_point, rect_shape):
+    # start_point = (
+    #     random.randint(0, gradients.shape[1] - rect_shape[0]), random.randint(0, gradients.shape[2] - rect_shape[1]))
+    gradients = np.asarray(gradients)
+    new_grads = np.zeros_like(gradients)
+    patch = gradients[:, start_point[0]:start_point[0] + rect_shape[0], start_point[1]:start_point[1] + rect_shape[1]]
+    if np.mean(patch) < 0:
+        new_grads[:, start_point[0]:start_point[0] + rect_shape[0],
+        start_point[1]:start_point[1] + rect_shape[1]] = -np.ones_like(patch)
+    return new_grads
+
+def generate_value(row, col):
+    matrix = []
+    for i in range(row):
+        line = []
+        for j in range(col):
+            pixel = []
+            for k in range(1):
+                div = random.randint(1, 20)#5,100
+                pixel.append((random.random() - 0.5) / div)
+            line.append(pixel)
+        matrix.append(line)
+    return [matrix]
