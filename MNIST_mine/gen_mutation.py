@@ -15,6 +15,7 @@ import random
 import numpy as np
 
 def mutation_matrix(step_size):
+
     method = random.randint(1, 3)
     trans_matrix = generate_value(img_rows, img_cols)
     rect_shape = (random.randint(1, 3), random.randint(1, 3))
@@ -32,9 +33,37 @@ def mutation_matrix(step_size):
     return transformation * step_size
 
 
-def split_image_train():
+def split_image_train(model_number):
     '''split the training image to normal image (the predication is right)
         and adversary image (the predication is wrong) and save them to path'''
+
+    pos_number = 0
+    neg_number = 0
+    for number in range(0,70000):
+        ori_img = np.expand_dims(x_test[number], axis=0)
+        ori_label = np.argmax(model.predict(ori_img)[0])
+        ori_img_de = ori_img.copy()
+        orig_img_deprocessed = deprocess_image(ori_img_de)
+
+        if ori_label == y_test[number]:
+            pos_number = pos_number + 1
+            # save the result to disk
+            store_path = '/Users/jingyi/Documents/Evaluations/deepxplore/MNIST/model_' + str(model_number) + '/right_prediction_data'
+            isExists = os.path.exists(store_path)
+            if not isExists:
+                os.makedirs(store_path)
+            imsave(store_path + "/" + str(number) + '_orig.png', orig_img_deprocessed)
+        elif ori_label != y_test[number]:
+            neg_number = neg_number + 1
+            # save the result to disk
+            store_path = '/Users/jingyi/Documents/Evaluations/deepxplore/MNIST/model_' + str(model_number) + '/wrong_prediction_data'
+            isExists = os.path.exists(store_path)
+            if not isExists:
+                os.makedirs(store_path)
+            imsave(store_path + "/" + str(number) + '_orig.png', orig_img_deprocessed)
+
+    print('Number of positive data: ', pos_number)
+    print('Number of negative data: ', neg_number)
 
 
 def label_change_mutation(step_size, mutation_number, seed_number):
@@ -58,7 +87,8 @@ def label_change_mutation(step_size, mutation_number, seed_number):
 
         # if(os.path.exists()):
         i = i + 1
-        number = random.randint(0, 69999)
+        # number = random.randint(0, 69999)
+        number = i
         # ori_img = np.expand_dims(random.choice(x_test), axis=0)
         ori_img = np.expand_dims(x_test[number], axis=0)
 
@@ -70,7 +100,7 @@ def label_change_mutation(step_size, mutation_number, seed_number):
             orig_img_deprocessed = deprocess_image(ori_img_de)
 
             # save the result to disk
-            store_path = './mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/true/" + str(i)
+            store_path = evaluation_root + '/mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/true/" + str(i)
             isExists = os.path.exists(store_path)
             if not isExists:
                 os.makedirs(store_path)
@@ -104,7 +134,7 @@ def label_change_mutation(step_size, mutation_number, seed_number):
 
             diverged_true[str(i)] = count
 
-            path = './mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/true/" + str(i) + "/" + str(count)
+            path = evaluation_root + '/mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/true/" + str(i) + "/" + str(count)
             isExists = os.path.exists(path)
             if not isExists:
                 os.makedirs(path)
@@ -115,7 +145,7 @@ def label_change_mutation(step_size, mutation_number, seed_number):
             orig_img_deprocessed = deprocess_image(ori_img_de)
 
             # save the result to disk
-            store_path = './mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/false/" + str(i)
+            store_path = evaluation_root + '/mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/false/" + str(i)
             isExists = os.path.exists(store_path)
             if not isExists:
                 os.makedirs(store_path)
@@ -148,7 +178,7 @@ def label_change_mutation(step_size, mutation_number, seed_number):
 
             diverged_false[str(i)] = count
 
-            path = './mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/false/" + str(i) + "/" + str(
+            path = evaluation_root + '/mutation_test/' + str(step_size) + "_" + str(mutation_number) + "/false/" + str(i) + "/" + str(
                 count)
             isExists = os.path.exists(path)
             if not isExists:
@@ -174,11 +204,16 @@ def label_change_mutation(step_size, mutation_number, seed_number):
 parser = argparse.ArgumentParser(
     description='Main function for mutation algorithm for input generation in Driving dataset')
 parser.add_argument('-t', '--target_model', help="target model that we want it predicts differently",
-                    choices=[0, 1, 2], default=0, type=int)
+                    choices=[1, 2, 3], default=1, type=int)
+parser.add_argument('-a', '--attack_type', help="attack type",
+                    choices=[0, 1, 2, 3], default=0, type=int)
 parser.add_argument('seeds', help="number of seeds of input", type=int)
 parser.add_argument('step', help="step size of gradient descent", type=float)
 parser.add_argument('mu_number', help="number of mutation", type=int)
 args = parser.parse_args()
+
+evaluation_root = '/Users/jingyi/Documents/Evaluations/deepxplore/MNIST/model_' + \
+                  str(args.target_model) + '/attack_' + str(args.attack_type)
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -200,18 +235,20 @@ model1 = Model1(input_tensor=input_tensor)
 model2 = Model2(input_tensor=input_tensor)
 model3 = Model3(input_tensor=input_tensor)
 
-if args.target_model == 0:
+if args.target_model == 1:
     model = model1
-elif args.target_model == 1:
-    model = model2
 elif args.target_model == 2:
+    model = model2
+elif args.target_model == 3:
     model = model3
 
-[normal_label_change,adv_label_change] = label_change_mutation(args.step,args.mu_number, args.seeds)
+# split_image_train(args.target_model)
 
+[normal_label_change,adv_label_change] = label_change_mutation(args.step,args.mu_number, args.seeds)
 print("Args: ", args)
 print("Normal data label change:")
 print(normal_label_change)
+print('Sum of label change for normal data: ', sum(normal_label_change))
 print("Adv data label change:")
 print(adv_label_change)
-
+print('Sum of label change for adversary data: ', sum(adv_label_change))
