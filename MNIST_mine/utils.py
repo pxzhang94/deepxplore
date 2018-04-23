@@ -2,9 +2,10 @@ import random
 from collections import defaultdict
 
 import numpy as np
+import os
 from keras import backend as K
 from keras.models import Model
-
+from scipy import ndimage
 
 # util function to convert a tensor into a valid image
 def deprocess_image(x):
@@ -156,3 +157,28 @@ def generate_value(row, col):
             line.append(pixel)
         matrix.append(line)
     return [matrix]
+
+
+def get_data_mutation_test(file_path):
+    '''
+    :param file_path: the file path for the adversary images
+    :return: the formatted data for mutation test, the actual label of the images, and the predicted label of the images
+    '''
+
+    image_list = []
+    real_labels = []
+    predicted_labels = []
+    for img_file in os.listdir(file_path):
+        if img_file.endswith('.png'):
+            print('Reading image: ', img_file)
+            img_file_split = img_file.split('_')
+            real_labels.append(img_file_split[1])
+            predicted_labels.append(img_file_split[2])
+            current_img = ndimage.imread(file_path + os.sep + img_file)
+            print(current_img.shape)
+            image_list.append(current_img)
+    print('Real labels: ', real_labels)
+    print('Predicted labels: ', predicted_labels)
+    return image_list, real_labels, predicted_labels
+
+# get_data_mutation_test('/Users/jingyi/cleverhans-master/cleverhans_tutorials/adv_jsma')
