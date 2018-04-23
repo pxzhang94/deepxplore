@@ -18,6 +18,7 @@ from cleverhans.utils_tf import model_eval, model_argmax
 from cleverhans_tutorials.tutorial_models import make_basic_cnn
 import pickle
 
+
 class MutationTest:
 
     '''
@@ -90,7 +91,7 @@ class MutationTest:
         elif method == 3:
             transformation = c_black(trans_matrix, start_point, rect_shape)
 
-        return transformation * self.step_size
+        return transformation
 
     def label_change_mutation_test(self, sess, test_data, orig_labels):
 
