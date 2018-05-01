@@ -13,7 +13,6 @@ def deprocess_image(x):
     x = np.clip(x, 0, 255).astype('uint8')
     return x.reshape(x.shape[1], x.shape[2])  # original shape (1,img_rows, img_cols,1)
 
-
 def normalize(x):
     # utility function to normalize a tensor by its L2 norm
     return x / (K.sqrt(K.mean(K.square(x))) + 1e-5)
@@ -158,6 +157,24 @@ def generate_value(row, col):
         matrix.append(line)
     return [matrix]
 
+# # generate for RGB
+# def generate_value(row, col):
+#     matrix = []
+#     for i in range(row):
+#         line = []
+#         for j in range(col):
+#             pixel = []
+#             for k in range(3):
+#                 div = random.randint(1, 20)  # 5,100
+#                 pixel.append((random.random() - 0.5) * 4 / div)
+#             line.append(pixel)
+#         matrix.append(line)
+#     # matrix = random.random(size = (row, col))
+#     # for i in range(row):
+#     #     for j in range(col):
+#     #         matrix[i][j] = (matrix[i][j] - 0.5) * 4
+#     return [matrix]
+
 
 def get_data_mutation_test(file_path):
     '''
@@ -172,8 +189,8 @@ def get_data_mutation_test(file_path):
         if img_file.endswith('.png'):
             print('Reading image: ', img_file)
             img_file_split = img_file.split('_')
-            real_labels.append(img_file_split[1])
-            predicted_labels.append(img_file_split[2])
+            real_labels.append(img_file_split[-3])
+            predicted_labels.append(img_file_split[-2])
             current_img = ndimage.imread(file_path + os.sep + img_file)
             print(current_img.shape)
             image_list.append(current_img)
