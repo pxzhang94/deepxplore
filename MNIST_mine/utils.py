@@ -190,8 +190,8 @@ def get_data_mutation_test(file_path):
         if img_file.endswith('.png'):
             print('Reading image: ', img_file)
             img_file_split = img_file.split('_')
-            real_labels.append(img_file_split[-3])
-            predicted_labels.append(img_file_split[-2])
+            real_labels.append(int(img_file_split[-3]))
+            predicted_labels.append(int(img_file_split[-2]))
             current_img = ndimage.imread(file_path + os.sep + img_file)
             print(current_img.shape)
             image_list.append(current_img)
