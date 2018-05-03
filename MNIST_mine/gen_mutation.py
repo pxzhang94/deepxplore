@@ -35,7 +35,7 @@ class MutationTest:
     seed_number = 500
     mutation_number = 1000
 
-    def __init__(self, img_rows, img_cols, step_size, seed_number, mutation_number=1000):
+    def __init__(self, img_rows, img_cols, step_size, seed_number=500, mutation_number=1000):
         self.img_rows = img_rows
         self.img_cols = img_cols
         self.step_size = step_size

@@ -111,7 +111,7 @@ saver.restore(
 
 
 # Define a detector
-ad = detector(0.003, 1, 28, 28, 1, 1000, 0.05, 0.05, 0.0025)
+ad = detector(0.0019, 1, 28, 28, 1, 1000, 0.05, 0.05, 0.001)
 
 X_train, Y_train, X_test, Y_test = data_mnist(train_start=0,
                                                   train_end=1000,
@@ -154,7 +154,7 @@ X_train, Y_train, X_test, Y_test = data_mnist(train_start=0,
 # print(label_change_mutation_counts_nor)
 
 
-[adv_image_list, real_labels, predicted_labels] = utils.get_data_mutation_test('/Users/jingyi/cleverhans/cleverhans_tutorials/adv_jsma')
+[adv_image_list, adv_image_files, real_labels, predicted_labels] = utils.get_data_mutation_test('/Users/jingyi/cleverhans/cleverhans_tutorials/adv_jsma')
 adv_count = 0
 total_mutation_counts = []
 label_change_mutation_counts = []
