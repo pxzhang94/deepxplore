@@ -188,16 +188,16 @@ def get_data_mutation_test(file_path):
     image_files =[]
     for img_file in os.listdir(file_path):
         if img_file.endswith('.png'):
-            print('Reading image: ', img_file)
+            # print('Reading image: ', img_file)
             img_file_split = img_file.split('_')
             real_labels.append(int(img_file_split[-3]))
             predicted_labels.append(int(img_file_split[-2]))
             current_img = ndimage.imread(file_path + os.sep + img_file)
-            print(current_img.shape)
+            # print(current_img.shape)
             image_list.append(current_img)
             image_files.append(img_file)
-    print('Real labels: ', real_labels)
-    print('Predicted labels: ', predicted_labels)
+    # print('Real labels: ', real_labels)
+    # print('Predicted labels: ', predicted_labels)
     return image_list, image_files, real_labels, predicted_labels
 
 # get_data_mutation_test('/Users/jingyi/cleverhans-master/cleverhans_tutorials/adv_jsma')

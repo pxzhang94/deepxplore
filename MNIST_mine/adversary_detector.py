@@ -154,7 +154,7 @@ X_train, Y_train, X_test, Y_test = data_mnist(train_start=0,
 # print(label_change_mutation_counts_nor)
 
 
-[adv_image_list, adv_image_files, real_labels, predicted_labels] = utils.get_data_mutation_test('/Users/jingyi/cleverhans/cleverhans_tutorials/adv_jsma')
+[adv_image_list, adv_image_files, real_labels, predicted_labels] = utils.get_data_mutation_test('/Users/jingyi/cleverhans/cleverhans_tutorials/mnist_adv_jsma')
 adv_count = 0
 total_mutation_counts = []
 label_change_mutation_counts = []
