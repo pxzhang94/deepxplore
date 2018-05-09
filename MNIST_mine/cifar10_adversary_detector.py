@@ -10,7 +10,7 @@ from os.path import expanduser
 from cleverhans_tutorials.tutorial_models import make_basic_cnn_cifar10
 from adversary_detector import detector
 
-home = expanduser("~")
+home = expanduser("~")+'/wangjingyi'
 dataset = 'cifar10'
 attack_type = 'jsma'
 folder_name = dataset+'_'+attack_type
@@ -42,7 +42,7 @@ saver.restore(sess, saved_model_path)
 ad = detector(0.0019, 1, image_rows, image_cols, 1, 2000, 0.05, 0.05, 0.0019*0.8)
 print('--- Detector config: ', ad.print_config())
 
-adv_image_dir = home+'/cleverhans/cleverhans_tutorials/'+folder_name+'/adv_'+attack_type
+adv_image_dir = home+'/cleverhans/cleverhans_tutorials/'+dataset+'_adv_'+attack_type
 print('--- Extracting adversary images from: ', adv_image_dir)
 [adv_image_list, adv_image_files, real_labels, predicted_labels] = utils.get_data_mutation_test(adv_image_dir)
 adv_count = 0
