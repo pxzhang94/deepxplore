@@ -1,0 +1,12 @@
+Metadata-Version: 1.0
+Name: MutationTestDNN
+Version: 0.1
+Summary: This is a project for mutation testing of deep neural networks
+Home-page: UNKNOWN
+Author: Jingyi Wang, Peixin Zhang
+Author-email: wangjyee@gmail.com
+License: PSF
+Description-Content-Type: UNKNOWN
+Description: UNKNOWN
+Keywords: deep neural networks,mutation testing
+Platform: UNKNOWN
